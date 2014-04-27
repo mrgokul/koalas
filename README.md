@@ -81,4 +81,6 @@ df.sort(cols,order);
 
 ##Series
 
-Extends ArrayList. See here for the complete docs.
+Extends ArrayList, supports many mathematical methods of Pandas' Series and displays the Recycable nature of the R vector. See here for the complete docs. Note :- Non-Float numerals are cast to float when comparing.
+
+### Recyclability
