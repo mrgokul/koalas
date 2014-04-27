@@ -45,7 +45,7 @@ DataFrame dfp = df.get(col); // Get multiple columns
 Series s = df.ix(); // Get one row
 
 Integer[] row = {};
-DataFrame dfs = df.get(row); // Get multiple rows
+DataFrame dfs = df.ix(row); // Get multiple rows
 
 /* Subsetting DataFrame on conditions requires a Series of Boolean.
    Use the Series' Relational operators such as eq(),gt(),lt() and 
@@ -66,7 +66,7 @@ DataFrame dfs1 = df.subset(condition);
 ### Sort
 
 ```
-// Quicksort ofcourse!
+// Quicksort of course!
 
 String[] cols = {}; //First sort by and then by
 Integer[] order = {}; //First ascending and second descending
