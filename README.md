@@ -7,11 +7,11 @@ Two major concepts:
 * DataFrame
 * Series
 
-See here for the complete docs.
+
 
 ##DataFrame
 
-Very similar to a Pandas/R DataFrame
+See here for the complete docs.
 
 ### Read a file
 
@@ -74,4 +74,11 @@ Integer[] order = {}; //First ascending and second descending
 df.sort(cols,order);
 ```
 
+### Join
 
+
+### Aggregate
+
+##Series
+
+Extends ArrayList. See here for the complete docs.
