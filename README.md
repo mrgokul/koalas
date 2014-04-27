@@ -53,14 +53,20 @@ DataFrame dfs = df.get(row); // Get multiple rows
    the boolean Series for subsetting. Yay! No Operator Overloading!
 */
 
-Series sub = df.get().eq().and(df.get().gt());
-DataFrame dfs1 = 
-
 /*
-The above statement is equivalent to the SQL statement
+The below statement is equivalent to the SQL statement
 SELECT * from df WHERE = AND > ;
 */
 
+Series condition = df.get().eq().and(df.get().gt());
+DataFrame dfs1 = df.subset(condition);
+
+//Iterate through rows
+
+Iterator it = df.iterator();
+while(it.hasNext()){
+    System.out.println(it.next());
+}
 ```
 
 
