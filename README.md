@@ -13,7 +13,7 @@ See here for the complete docs.
 
 Very similar to a Pandas/R DataFrame
 
-### Getting Started
+### Read a file
 
 ```java
 
@@ -26,3 +26,41 @@ System.out.println(df);
 */
 
 ```
+
+### Project
+
+
+```java
+
+Series s = df.get(); // Get one column
+
+String[] col = {};
+DataFrame dfp = df.get(col); // Get multiple columns
+```
+
+### Select
+
+```java
+
+Series s = df.ix(); // Get one row
+
+Integer[] row = {};
+DataFrame dfs = df.get(row); // Get multiple rows
+
+/* Subsetting DataFrame on conditions requires a Series of Boolean.
+   Use the Series' Relational operators such as eq(),gt(),lt() and 
+   optionally Logical operators such as and(), or(), not() to setup
+   the boolean Series for subsetting. Yay! No Operator Overloading!
+*/
+
+Series sub = df.get().eq().and(df.get().gt());
+DataFrame dfs1 = 
+
+/*
+The above statement is equivalent to the SQL statement
+SELECT * from df WHERE = AND > ;
+*/
+
+```
+
+
