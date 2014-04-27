@@ -61,12 +61,17 @@ SELECT * from df WHERE = AND > ;
 Series condition = df.get().eq().and(df.get().gt());
 DataFrame dfs1 = df.subset(condition);
 
-//Iterate through rows
+```
 
-Iterator it = df.iterator();
-while(it.hasNext()){
-    System.out.println(it.next());
-}
+### Sort
+
+```
+// Quicksort ofcourse!
+
+String[] cols = {}; //First sort by and then by
+Integer[] order = {}; //First ascending and second descending
+
+df.sort(cols,order);
 ```
 
 
