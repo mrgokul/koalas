@@ -106,7 +106,7 @@ Apply func = new Apply() {
 String[] cols= {"score"};
 String[] by= {"subject"};
 
-DataFrame x= m.groupBy(cols,by,func);
+DataFrame dfg= df.groupBy(cols,by,func);
 ```
 
 ##Series
