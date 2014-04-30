@@ -116,10 +116,6 @@ DataFrame dfg= df.groupBy(cols,by,func);
 
 ##Series
 
-```java
-String[] cols= {"name"};
-DataFrame dfm = Koalas.join(df, df, cols,"inner"));
-```
 
 Extends ArrayList, supports many mathematical methods of Pandas' Series and displays the Recycable nature of the R vector. 
 ### Examples
