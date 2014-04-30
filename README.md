@@ -90,6 +90,11 @@ df.sort(cols,order);
 
 ### Join
 
+```
+String[] cols= {"name"};
+DataFrame df = Koalas.join(df, df, cols,"right");
+
+```
 
 
 ### Aggregate
@@ -116,6 +121,5 @@ String[] cols= {"name"};
 DataFrame dfm = Koalas.join(df, df, cols,"inner"));
 ```
 
-Extends ArrayList, supports many mathematical methods of Pandas' Series and displays the Recycable nature of the R vector. See here for the complete docs. 
-
+Extends ArrayList, supports many mathematical methods of Pandas' Series and displays the Recycable nature of the R vector. 
 ### Examples
