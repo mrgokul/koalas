@@ -92,7 +92,7 @@ df.sort(cols,order);
 
 ```
 String[] cols= {"name"};
-DataFrame df = Koalas.join(df, df, cols,"right");
+DataFrame dfm = Koalas.join(df, df, cols,"right");
 
 ```
 
