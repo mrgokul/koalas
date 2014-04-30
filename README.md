@@ -19,6 +19,19 @@ DataFrame df = Koalas.readCSV("example.csv");
 System.out.println(df);
 /*
 
+name             age              subject          score            
+____________________________________________________________________
+
+alice            10.0             Math             7.0              
+bar              10.0             Physics          100.0            
+charlie          11.0             Chemistry        99.0             
+doug             12.0             Physics          95.0             
+eve              9.0              Physics          4.0              
+foo              13.0             Chemistry        101.0            
+george           12.0             Math             92.0             
+harry            11.0             Chemistry        96.0             
+idiot            11.0             Physics          1.0              
+joker            12.0             Chemistry        2.0              
 
 
 */
