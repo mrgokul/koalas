@@ -1,7 +1,7 @@
 Koalas
 ======
 
-Lightweight Data Analysis Framework. Inspired from R and Python-Pandas, and adapted to a terri*** language called Java. Use it only because you have no other choice.
+Lightweight Data Analysis Framework. Inspired from R and Python-Pandas, and adapted to a terri*** language called Java. 
 
 Two major concepts:
 * DataFrame
@@ -10,8 +10,6 @@ Two major concepts:
 
 
 ##DataFrame
-
-See here for the complete docs.
 
 ### Read a file
 
@@ -25,6 +23,9 @@ System.out.println(df);
 
 */
 
+
+//Note:- All numeric columns are cast as float!
+
 ```
 
 ### Project
@@ -32,9 +33,9 @@ System.out.println(df);
 
 ```java
 
-Series s = df.get(); // Get one column
+Series s = df.get("name"); // Get one column
 
-String[] col = {};
+String[] col = {"name","age"};
 DataFrame dfp = df.get(col); // Get multiple columns
 ```
 
@@ -42,9 +43,9 @@ DataFrame dfp = df.get(col); // Get multiple columns
 
 ```java
 
-Series s = df.ix(); // Get one row
+Series s = df.ix(0); // Get one row
 
-Integer[] row = {};
+Integer[] row = {0,2,4};
 DataFrame dfs = df.ix(row); // Get multiple rows
 
 /* Subsetting DataFrame on conditions requires a Series of Boolean.
@@ -55,21 +56,21 @@ DataFrame dfs = df.ix(row); // Get multiple rows
 
 /*
 The below statement is equivalent to the SQL statement
-SELECT * from df WHERE = AND > ;
+SELECT * from df WHERE subject = 'Physics' AND score > 10;
 */
 
-Series condition = df.get().eq().and(df.get().gt());
+Series condition = df.get("subject").eq("Physics").and(df.get("score").gt(10.0f));
 DataFrame dfs1 = df.subset(condition);
 
 ```
 
 ### Sort
 
-```
+```java
 // Quicksort of course!
 
-String[] cols = {}; //First sort by and then by
-Integer[] order = {}; //First ascending and second descending
+String[] cols = {"subject","age"}; //First sort by and then by
+Integer[] order = {0,1}; //First ascending and then descending
 
 df.sort(cols,order);
 ```
@@ -77,10 +78,31 @@ df.sort(cols,order);
 ### Join
 
 
+
 ### Aggregate
+
+```java
+Apply func = new Apply() {
+                       @Override
+                       public Object map(Series x) {
+                               return x.sum();
+                       }
+           };
+ 
+
+String[] cols= {"score"};
+String[] by= {"subject"};
+
+DataFrame x= m.groupBy(cols,by,func);
+```
 
 ##Series
 
+```java
+String[] cols= {"name"};
+DataFrame dfm = Koalas.join(df, df, cols,"inner"));
+```
+
 Extends ArrayList, supports many mathematical methods of Pandas' Series and displays the Recycable nature of the R vector. See here for the complete docs. 
 
-### Recyclability
+### Examples
