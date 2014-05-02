@@ -7,7 +7,7 @@ Two major concepts:
 * DataFrame
 * Series
 
-For Javadoc refer to http://mrgokul.github.io/koalas/
+You can refer [here](http://mrgokul.github.io/koalas/) for the API docs.
 
 
 ##DataFrame
@@ -91,6 +91,11 @@ df.sort(cols,order);
 
 ### Join
 
+```
+String[] cols= {"name"};
+DataFrame dfm = Koalas.join(df, df, cols,"right");
+
+```
 
 
 ### Aggregate
@@ -112,11 +117,6 @@ DataFrame dfg= df.groupBy(cols,by,func);
 
 ##Series
 
-```java
-String[] cols= {"name"};
-DataFrame dfm = Koalas.join(df, df, cols,"inner"));
-```
 
-Extends ArrayList, supports many mathematical methods of Pandas' Series and displays the Recycable nature of the R vector. See here for the complete docs. 
-
+Extends ArrayList, supports many mathematical methods of Pandas' Series and displays the Recycable nature of the R vector. 
 ### Examples
