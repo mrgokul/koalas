@@ -141,6 +141,7 @@ public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String 
 				}
 			}
 		}
+		
 		while(it2.hasNext()){
 			Object nx = it2.next();
 			if(listCols.indexOf(nx) == -1){
@@ -173,6 +174,7 @@ public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String 
 			
 		}
 		
+		//System.out.println(map);
 		while(itdf2.hasNext()){
 			List<Object>key=new ArrayList<Object>();
 			Series ls= new Series();
@@ -187,37 +189,35 @@ public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String 
 				}
 			}
 			
-			if(map.containsKey(key) && !full){			
-				if(left){
-					List<Series> val2=map.get(key);
-					Iterator<Series> it3= val2.iterator();
-					while(it3.hasNext()){
-						it3.next().addAll(ls);
-					}
-				}
-				else{
-					List<Series> val2=map.get(key);
-					Iterator<Series> it3= val2.iterator();
-					while(it3.hasNext()){
-						it3.next().addAll(0,ls);
-					}				
-				}				
-			}
-				
-			if(full){
-					if(!(mapfull.containsKey(key))){
-						List<Series>value=new ArrayList<Series>();
-						value.add(ls);
-						mapfull.put(key, value);				
-					}			
-					else{
-						mapfull.get(key).add(ls);
+			if(!(mapfull.containsKey(key))){
+				List<Series>value=new ArrayList<Series>();
+				value.add(ls);
+				mapfull.put(key, value);				
+			}			
+			else{
+				mapfull.get(key).add(ls);
+			}				
+		}
+		
+			
+		Iterator ita= mapfull.entrySet().iterator();
+		while(ita.hasNext()){
+			Map.Entry pairs = (Map.Entry)ita.next();
+			List<Object> keys= (List<Object>) pairs.getKey();
+			List<Object> values= (List<Object>) pairs.getValue();
+			List<Series> s= new ArrayList<Series>();
+			if (map.containsKey(keys)){	
+				for(Series o:map.get(keys)){
+					for (Series o1:mapfull.get(keys)){
+						Series x= new Series(o);
+						x.addAll(o1);
+						s.add(x);
 					}
 					
 				}
-				
+				map.put(keys,s);					
 			}
-			
+		}
 		
 		if (full){
 			Iterator it5= mapfull.entrySet().iterator();
@@ -226,17 +226,7 @@ public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String 
 				List<Object> keys= (List<Object>) pairs.getKey();
 				List<Object> values= (List<Object>) pairs.getValue();
 				List<Series> s= new ArrayList<Series>();
-				if (map.containsKey(keys)){	
-					for(Series o:map.get(keys)){
-						for (Series o1:mapfull.get(keys)){
-							o.addAll(o1);
-							s.add(o);
-						}
-						
-					}
-					map.put(keys,s);					
-				}
-				else{
+				if (!map.containsKey(keys)){
 					for (Series o1:mapfull.get(keys)){
 						Series nulllist= new Series();
 						for(int j =cols2.size();j<newcolumns.size();j++,nulllist.add(null));
@@ -262,6 +252,9 @@ public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String 
 			while (it6.hasNext()){
 				Series row=new Series(keys);
 				List<Object> val = (List<Object>) it6.next();
+				//System.out.println(val);
+				//System.out.println(val.size());
+				//System.out.println(cols.length);
 				if (!inner && full && left){
 					if (val.size()+cols.length != newcolumns.size()){
 						List<Object> nulllist= new ArrayList<Object>();
@@ -270,21 +263,13 @@ public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String 
 					}
 					
 				}
-				if (!inner && !full && left){
+				if (!inner && !full){
 					if (val.size()+cols.length != newcolumns.size()){
 						List<Object> nulllist= new ArrayList<Object>();
 						for(int j =cols1.size();j<newcolumns.size();j++,nulllist.add(null));
 						val.addAll(nulllist);
 					}
-					
-				}
-				if (!inner && !full && !left){
-					if (val.size()+cols.length != newcolumns.size()){
-						List<Object> nulllist= new ArrayList<Object>();
-						for(int j =cols2.size();j<newcolumns.size();j++,nulllist.add(null));
-						val.addAll(0,nulllist);
-					}
-					
+										
 				}
 				if (val.size()+cols.length == newcolumns.size()){
 					row.addAll(val);
