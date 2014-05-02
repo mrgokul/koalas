@@ -7,6 +7,7 @@ Two major concepts:
 * DataFrame
 * Series
 
+For Javadoc refer to http://mrgokul.github.io/koalas/
 
 
 ##DataFrame
