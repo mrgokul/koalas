@@ -16,6 +16,12 @@ import com.koalas.common.DataFrame;
 import com.koalas.common.Series;
 
 public class Koalas {
+	/**
+	 * To read a given csv file as DataFrame
+	 * @param csvfile location of csv file
+	 * @param seperator default ","
+	 * @return DataFrame
+	 */
 	@SuppressWarnings("resource")
 	public static DataFrame readCSV(String csvfile,String seperator) {
 		String line="";
@@ -75,7 +81,14 @@ public class Koalas {
 	
 
 	
-	
+	/**
+	 * To perform join operation between two DataFrames
+	 * @param df1  First DataFrame
+	 * @param df2  Second DataFrame
+	 * @param cols Column names as string array  on which join has to be performed 
+	 * @param jointype "inner","full","left","right"
+	 * @return
+	 */
 public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String jointype){
 		
 		boolean left;
