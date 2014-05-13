@@ -15,12 +15,18 @@ import java.util.Map;
 import com.koalas.common.DataFrame;
 import com.koalas.common.Series;
 
+/**
+ * Same as pandas in Python , which can perform joins,read csv operations
+ * @author GokulRamesh,Sureshkrishna G
+ *
+ */
 public class Koalas {
 	/**
-	 * To read a given csv file as DataFrame
+	 * To read a given csv file as DataFrame 
 	 * @param csvfile location of csv file
 	 * @param seperator default ","
 	 * @return DataFrame
+
 	 */
 	@SuppressWarnings("resource")
 	public static DataFrame readCSV(String csvfile,String seperator) {
@@ -87,8 +93,9 @@ public class Koalas {
 	 * @param df2  Second DataFrame
 	 * @param cols Column names as string array  on which join has to be performed 
 	 * @param jointype "inner","full","left","right"
-	 * @return
+	 * @return DataFrame
 	 */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String jointype){
 		
 		boolean left;
@@ -134,8 +141,8 @@ public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String 
 		Map <List<Object>,List<Series>> mapfull=new LinkedHashMap <List<Object>,List<Series>>();
 		List<Object> cols1= df1.getColumns();
 		List<Object> cols2= df2.getColumns();
-		Iterator it1 = cols1.iterator();
-		Iterator it2 = cols2.iterator();
+		Iterator<Object> it1 = cols1.iterator();
+		Iterator<Object> it2 = cols2.iterator();
 		List<Object> newcolumns= new ArrayList<Object>();
 		for(String col: cols){
 			newcolumns.add(col);
@@ -217,7 +224,6 @@ public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String 
 		while(ita.hasNext()){
 			Map.Entry pairs = (Map.Entry)ita.next();
 			List<Object> keys= (List<Object>) pairs.getKey();
-			List<Object> values= (List<Object>) pairs.getValue();
 			List<Series> s= new ArrayList<Series>();
 			if (map.containsKey(keys)){	
 				for(Series o:map.get(keys)){
@@ -237,7 +243,6 @@ public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String 
 			while(it5.hasNext()){
 				Map.Entry pairs = (Map.Entry)it5.next();
 				List<Object> keys= (List<Object>) pairs.getKey();
-				List<Object> values= (List<Object>) pairs.getValue();
 				List<Series> s= new ArrayList<Series>();
 				if (!map.containsKey(keys)){
 					for (Series o1:mapfull.get(keys)){

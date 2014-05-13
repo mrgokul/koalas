@@ -20,7 +20,11 @@ import com.koalas.common.Series;
 import com.koalas.utils.Apply;
 import com.koalas.utils.Utils;
 import com.koalas.utils.SeriesIterator;
-
+/**
+ * Tabular data structure with labeled axes (rows and columns).
+ * @author GokulRamesh,Sureshkrishna G
+ *
+ */
 public class DataFrame implements Iterable{
 	
     private  Map<String,Series> mapSeries;
@@ -41,21 +45,32 @@ public class DataFrame implements Iterable{
 			throw new IllegalArgumentException("Unmatching size of index and List");
 
 		}
+		
 		int first_size = seriesList.get(0).size();
-		Iterator<Series> it=seriesList.iterator();
-		Iterator<Series> it1=seriesList.iterator();
-		while(it.hasNext()){
-			if(first_size != it.next().size()){
+		for(Series s:seriesList){
+			if(first_size != s.size()){
 				throw new IllegalArgumentException("Size of series is differing");
 			}
 		}
-		this.Columns = index;
+		Map<Object,Integer> map= new HashMap<Object,Integer>();
+		List<Object> index1 = new ArrayList<Object>();
+		for(Object o:index){
+			if (!(map.containsKey(o))){
+				map.put(o,1);
+				index1.add(o);
+			}
+			else{
+				index1.add((String)o+"."+ map.get(o));
+				map.put(o,map.get(o)+1);
+			}
+		}
+		this.Columns = index1;
 		this.mapSeries = new HashMap<String,Series>();
 		this.TmapSeries = new HashMap<Integer,Series>();
 		
 		int j=0;
-		while(it1.hasNext()){			 
-			this.mapSeries.put((String) index.get(j), it1.next());
+		for(Series s:seriesList){			 
+			this.mapSeries.put((String) index.get(j), s);
 			j++;
 		}
 
@@ -105,11 +120,9 @@ public class DataFrame implements Iterable{
 		else{
 			
 		int first_size = seriesList.get(0).size();
-		Iterator<Series> it=seriesList.iterator();
-		Iterator<Series> it1=seriesList.iterator();
 		
-		while(it.hasNext()){
-			if(first_size != it.next().size()){
+		for(Series s:seriesList){
+			if(first_size != s.size()){
 				throw new IllegalArgumentException("Size of series is differing");
 			}
 		}
@@ -117,8 +130,8 @@ public class DataFrame implements Iterable{
 			throw new IllegalArgumentException("Unmatching size of index and List");
 		
 		}			
-		while(it1.hasNext()){
-			this.TmapSeries.put(j, it1.next());
+		for(Series s:seriesList){
+			this.TmapSeries.put(j, s);
 			j++;
 			}
 		for(int k=0; k<first_size; k++){
@@ -305,9 +318,8 @@ public class DataFrame implements Iterable{
 			if (TmapSeries.size() == newseries.size()){
 				mapSeries.put(col, newseries);
 				Iterator<Object> it=newseries.iterator();
-				Iterator<Integer> it1=rownum.iterator();
-				while(it.hasNext()){
-					TmapSeries.get(it1.next()).set(Columns.indexOf(col),it.next());
+				for ( Integer i :rownum){
+					TmapSeries.get(i).set(Columns.indexOf(col),it.next());
 				}
 			}
 			else{
@@ -318,10 +330,9 @@ public class DataFrame implements Iterable{
 			if (TmapSeries.size() == newseries.size()){
 				mapSeries.put(col, newseries);
 				Columns.add(col);
-				Iterator<Object> it=newseries.iterator();
-				Iterator<Integer> it1=rownum.iterator();				
-				for (int i=0;i<newseries.size();i++){
-					TmapSeries.get(it1.next()).add(it.next());
+				Iterator<Object> it=newseries.iterator();			
+				for ( Integer i :rownum){
+					TmapSeries.get(i).add(it.next());
 				}
 			}
 			else{
@@ -418,7 +429,7 @@ public class DataFrame implements Iterable{
 	 * @param axis Integer array whcih contains 0 or 1 for each column mentioned in column names, 
 	 * 0-asc, 1- desc
 	 */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "unchecked" })
     public void sort(String[] columnNames,int[] axis){
 		
 	
@@ -499,10 +510,10 @@ public class DataFrame implements Iterable{
      */
     public DataFrame subset(Series s){
     	List<Series> l=new ArrayList<Series>();
-    	Iterator<Object> it1=s.iterator();
     	int i=0;
-    	while(it1.hasNext()){
-    		if ((boolean) it1.next()){
+    	for(Object o:s){
+    		if ((boolean) o){
+    			System.out.println(o);
     			l.add(TmapSeries.get(rownum.get(i)));   			
     		}
     		i++;
@@ -515,16 +526,13 @@ public class DataFrame implements Iterable{
      * @return DataFrame
      */
     public DataFrame T(){
-    	Iterator<Integer> it1=rownum.iterator();
     	List<Object> newcol= new ArrayList<Object>();
     	List<Series> sl= new ArrayList<Series>();
-    	while(it1.hasNext()){
-    		Integer next = it1.next();
+    	for (Integer i:rownum){
+    		Integer next = i;
     		newcol.add(next.toString());
     		sl.add(TmapSeries.get(next));    		
-    	}
-    	System.out.println(sl.get(0).size());
-    	System.out.println(newcol.size());   	
+    	}  	
     	DataFrame newdf= new DataFrame(sl,newcol);
     	return newdf;
     }
@@ -555,12 +563,9 @@ public class DataFrame implements Iterable{
 		 * @param x  Object which will replace the null values 
 		 */
 	public void replace(String col,Object x){
-		Iterator<Object> it1= mapSeries.get(col).iterator();
 		int i=0;
-		while(it1.hasNext()){
-			System.out.println(mapSeries.get(col).get(i));
-			if (it1.next() == null){
-
+		for(Object o:mapSeries.get(col)){
+			if (o == null){
 				mapSeries.get(col).set(i, x);
 				TmapSeries.get(rownum.get(i)).set(Columns.indexOf(col),x);
 			}
@@ -616,7 +621,7 @@ public class DataFrame implements Iterable{
 	public DataFrame groupBy(String[] x,String[] cols,Apply func){
 		List<Object> newcol= new ArrayList<Object>();
 		Map <List<Object>,Series> map=new LinkedHashMap <List<Object>,Series>();
-		List<String> listCols =  Arrays.asList(cols);
+		@SuppressWarnings("unused")
 		List<Object> cols1= this.getColumns();
 		Iterator itdf = this.iterator();
 		newcol.addAll(Arrays.asList(cols));
@@ -645,19 +650,19 @@ public class DataFrame implements Iterable{
 			}			
 			else{
 				Series b = map.get(key);
-				Iterator<Object> it2=b.iterator();
-				Iterator<Object> it3=ls.iterator();
-				while (it2.hasNext()){
-					Series s2=(Series) it2.next();
-					s2.add(it3.next());
+				Iterator<Object> it=ls.iterator();
+				for (Object o:b){
+					Series s2=(Series) o;
+					s2.add(it.next());
 				}
 					
 				}
 			}
-		Iterator it4= map.entrySet().iterator();
+		Iterator mapkey= map.entrySet().iterator();
 		List<Series>tmap2=new ArrayList<Series>();
-		while(it4.hasNext()){			
-			Map.Entry pairs = (Map.Entry)it4.next();
+		while(mapkey.hasNext()){			
+			Map.Entry pairs = (Map.Entry)mapkey.next();
+			@SuppressWarnings("unchecked")
 			List<Object> keys= (List<Object>) pairs.getKey();
 			Series values= (Series) pairs.getValue();
 			Series agg= aggregate(func,values);
