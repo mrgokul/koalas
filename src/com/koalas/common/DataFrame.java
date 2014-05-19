@@ -20,7 +20,11 @@ import com.koalas.common.Series;
 import com.koalas.utils.Apply;
 import com.koalas.utils.Utils;
 import com.koalas.utils.SeriesIterator;
-
+/**
+ * Tabular data structure with labeled axes (rows and columns).
+ * @author GokulRamesh,Sureshkrishna
+ *
+ */
 public class DataFrame implements Iterable{
 	
     private  Map<String,Series> mapSeries;
@@ -30,27 +34,43 @@ public class DataFrame implements Iterable{
     private List<Object> Columns;
     private List<Integer> rownum;
 	
+	/**
+	 * To Create a DataFrame given list of columns  as list of series and header as list of objects
+	 * @param seriesList list of series which is list of columns
+	 * @param index list of objects  which is header
+	 */
 	public DataFrame (List<Series> seriesList, List<Object> index){
 
 		if (seriesList.size() != index.size()){
 			throw new IllegalArgumentException("Unmatching size of index and List");
 
 		}
+		
 		int first_size = seriesList.get(0).size();
-		Iterator<Series> it=seriesList.iterator();
-		Iterator<Series> it1=seriesList.iterator();
-		while(it.hasNext()){
-			if(first_size != it.next().size()){
+		for(Series s:seriesList){
+			if(first_size != s.size()){
 				throw new IllegalArgumentException("Size of series is differing");
 			}
 		}
-		this.Columns = index;
+		Map<Object,Integer> map= new HashMap<Object,Integer>();
+		List<Object> index1 = new ArrayList<Object>();
+		for(Object o:index){
+			if (!(map.containsKey(o))){
+				map.put(o,1);
+				index1.add(o);
+			}
+			else{
+				index1.add((String)o+"."+ map.get(o));
+				map.put(o,map.get(o)+1);
+			}
+		}
+		this.Columns = index1;
 		this.mapSeries = new HashMap<String,Series>();
 		this.TmapSeries = new HashMap<Integer,Series>();
 		
 		int j=0;
-		while(it1.hasNext()){			 
-			this.mapSeries.put((String) index.get(j), it1.next());
+		for(Series s:seriesList){			 
+			this.mapSeries.put((String) index.get(j), s);
 			j++;
 		}
 
@@ -69,7 +89,12 @@ public class DataFrame implements Iterable{
 
 		
 	}
-	
+	/**
+	 * To Create a DataFrame given list of rows  as list of series and header as list of objects
+	 * @param seriesList list of series which is list of rows
+	 * @param index list of objects  which is header
+	 * @param trans Always 'true'. Just to differentiate between rows and columns input type 
+	 */
 	public DataFrame (List<Series> seriesList, List<Object> index,Boolean trans){
 		
 		Map<Object,Integer> map= new HashMap<Object,Integer>();
@@ -95,11 +120,9 @@ public class DataFrame implements Iterable{
 		else{
 			
 		int first_size = seriesList.get(0).size();
-		Iterator<Series> it=seriesList.iterator();
-		Iterator<Series> it1=seriesList.iterator();
 		
-		while(it.hasNext()){
-			if(first_size != it.next().size()){
+		for(Series s:seriesList){
+			if(first_size != s.size()){
 				throw new IllegalArgumentException("Size of series is differing");
 			}
 		}
@@ -107,8 +130,8 @@ public class DataFrame implements Iterable{
 			throw new IllegalArgumentException("Unmatching size of index and List");
 		
 		}			
-		while(it1.hasNext()){
-			this.TmapSeries.put(j, it1.next());
+		for(Series s:seriesList){
+			this.TmapSeries.put(j, s);
 			j++;
 			}
 		for(int k=0; k<first_size; k++){
@@ -153,7 +176,9 @@ public class DataFrame implements Iterable{
 	}
 	
 
-	
+	/**
+	 * Outputs the DataFrame
+	 */
 	public String toString(){
 		int head= 10;
 		if (TmapSeries.size()<head){
@@ -174,6 +199,11 @@ public class DataFrame implements Iterable{
 		return ret;
 	}
 	
+	/**
+	 * Getting the first required number of rows as a separate DataFrame 
+	 * @param rows required number of rows as integer
+	 * @return DataFrame with number of rows = rows
+	 */
 	public DataFrame head(int rows){
 		if (rows > TmapSeries.size()){
 			throw new IllegalArgumentException("Not that many rows exist!");
@@ -186,6 +216,11 @@ public class DataFrame implements Iterable{
 		return newdf;
 	}
 	
+	/**
+	 * Getting the last required number of rows as a separate DataFrame 
+	 * @param rows required number of rows as integer
+	 * @return DataFrame with number of rows = rows
+	 */
 	public DataFrame tail(int rows){
 		if (rows > TmapSeries.size()){
 			throw new IllegalArgumentException("Not that many rows exist!");
@@ -198,6 +233,11 @@ public class DataFrame implements Iterable{
 		return newdf;
 	}
 	
+	/**
+	 * Getting the selective rows as a separate DataFrame by giving the row numbers as integer array   
+	 * @param rows integer array
+	 * @return DataFrame with number of rows = length of rows
+	 */
 	public  DataFrame ix(int[] rows){
 		List<Series> row = new ArrayList<Series> ();
 		for (int i=0; i< rows.length; i++){
@@ -207,10 +247,20 @@ public class DataFrame implements Iterable{
 		return newdf;
 	}
 
+	/**
+	 * Getting the required row from a DataFrame as Series  by giving the row index
+	 * @param row integer 
+	 * @return Series 
+	 */
 	public  Series ix(int row){
 		return TmapSeries.get(rownum.get(row)).clone();
 	}
 	
+	/**
+	 *  Getting the selective columns as a separate DataFrame by giving the column names  as string array   
+	 * @param columnnames string array
+	 * @return DataFrame with number of columns = length of column names
+	 */
 	public DataFrame get(String[] columnnames){
 		List<Series> row = new ArrayList<Series> ();
 		List<Object> newcolumns= new ArrayList<Object>();
@@ -222,6 +272,11 @@ public class DataFrame implements Iterable{
 		return newdf;		
 	}
 	
+	/**
+	 *  Getting the selective columns as a separate DataFrame by giving the indexes of columns  as integer array   
+	 * @param columnindex integer array
+	 * @return DataFrame with number of columns = length of columnindex
+	 */
 	public DataFrame get(int[] columnindex){
 		List<Series> column = new ArrayList<Series> ();
 		List<Object> newcolumns= new ArrayList<Object>();
@@ -233,23 +288,38 @@ public class DataFrame implements Iterable{
 		return newdf;		
 	}
 	
+	
+	/**
+	 * Getting the required column from a DataFrame as Series  by giving the column name
+	 * @param col columnname  
+	 * @return Series 
+	 */
 	public Series get(String col){
 		return mapSeries.get(col).clone();		
 	}
 	
+	/**
+	 * updating the value in a DataFrame provided column name and index of value in that column
+	 * @param col column name as string
+	 * @param position index of value in that column
+	 * @param value new value
+	 */
 	public void set(String col,int position,Object value){
 		TmapSeries.get(rownum.get(position)).set(Columns.indexOf(col),value);
 		mapSeries.get(col).set(position,value);
 	}
-	
+	/**
+	 * updating the entire column in a DataFrame with a new series of replacing column size 
+	 * @param col column name as string
+	 * @param newseries Series which replaces the given column
+	 */
 	public void set(String col,Series newseries){
 		if (Columns.contains(col)){
 			if (TmapSeries.size() == newseries.size()){
 				mapSeries.put(col, newseries);
 				Iterator<Object> it=newseries.iterator();
-				Iterator<Integer> it1=rownum.iterator();
-				while(it.hasNext()){
-					TmapSeries.get(it1.next()).set(Columns.indexOf(col),it.next());
+				for ( Integer i :rownum){
+					TmapSeries.get(i).set(Columns.indexOf(col),it.next());
 				}
 			}
 			else{
@@ -260,10 +330,9 @@ public class DataFrame implements Iterable{
 			if (TmapSeries.size() == newseries.size()){
 				mapSeries.put(col, newseries);
 				Columns.add(col);
-				Iterator<Object> it=newseries.iterator();
-				Iterator<Integer> it1=rownum.iterator();				
-				for (int i=0;i<newseries.size();i++){
-					TmapSeries.get(it1.next()).add(it.next());
+				Iterator<Object> it=newseries.iterator();			
+				for ( Integer i :rownum){
+					TmapSeries.get(i).add(it.next());
 				}
 			}
 			else{
@@ -271,13 +340,21 @@ public class DataFrame implements Iterable{
 			}			
 		}		
 	}
+	/**
+	 * To find the size of a DataFrame
+	 * @return List of integers which contains number of rows and number of columns
+	 */
 	 public List<Integer> size(){
 		 List<Integer> size= new ArrayList<Integer>(); 
 		 size.add(TmapSeries.size());
 		 size.add(mapSeries.size());
 		 return size;
 	 }
-	 
+	 /**
+	  * To append a new DataFrame to the existing one on a condition 
+	  * that both should have same number of columns
+	  * @param df
+	  */
 	 public void append(DataFrame df){
 		 if (!(df.mapSeries.size() == mapSeries.size())){
 			 throw new IllegalArgumentException("Column Sizes of old and new dataframes are diferent");
@@ -301,7 +378,10 @@ public class DataFrame implements Iterable{
 	 }
 	
 
-	
+	/**
+	 * To write a DataFrame to  csv by giving the location of new file 
+	 * @param filelocation location to which csv has to be witten
+	 */
 	public  void toCSV(String filelocation){
 		int length=TmapSeries.size();
 		String content = "";
@@ -343,8 +423,13 @@ public class DataFrame implements Iterable{
 	}
 	
 	
-	
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+	/**
+	 * To sort a DataFrame by giving the column names and axis 
+	 * @param columnNames String array of column names on which sorting has to be performed 
+	 * @param axis Integer array whcih contains 0 or 1 for each column mentioned in column names, 
+	 * 0-asc, 1- desc
+	 */
+    @SuppressWarnings({ "unchecked" })
     public void sort(String[] columnNames,int[] axis){
 		
 	
@@ -398,12 +483,19 @@ public class DataFrame implements Iterable{
     	}     		
     }
 	
+    /**
+     * To sort a DataFrame in ascending order by giving the column name 
+     * @param column  Name of the column as string  
+     */
     public void sort(String column){
         int [] axis={0};
     String[] columns = {column};
         sort(columns,axis);
     }
-    
+    /**
+     *  To sort a DataFrame in ascending order by giving the column names
+     * @param columnNames Names of the columns as string array
+     */
     public void sort(String[] columnNames){
     	int [] axis=new int[columnNames.length];
     	for (int i=0;i<columnNames.length;i++){
@@ -411,13 +503,17 @@ public class DataFrame implements Iterable{
     	}
     	sort(columnNames,axis);
     }
-
+    /**
+     * To subset a DataFrame by giving a Series of booleans (True:consider the row, False: don't consider the row) 
+     * @param s Series of booleans 
+     * @return DataFrame
+     */
     public DataFrame subset(Series s){
     	List<Series> l=new ArrayList<Series>();
-    	Iterator<Object> it1=s.iterator();
     	int i=0;
-    	while(it1.hasNext()){
-    		if ((boolean) it1.next()){
+    	for(Object o:s){
+    		if ((boolean) o){
+    			System.out.println(o);
     			l.add(TmapSeries.get(rownum.get(i)));   			
     		}
     		i++;
@@ -425,28 +521,34 @@ public class DataFrame implements Iterable{
     	DataFrame sub=  new DataFrame(l,Columns,true);
     	return sub;
     }
-    
+    /**
+     * To get the Transpose of a DataFrame
+     * @return DataFrame
+     */
     public DataFrame T(){
-    	Iterator<Integer> it1=rownum.iterator();
     	List<Object> newcol= new ArrayList<Object>();
     	List<Series> sl= new ArrayList<Series>();
-    	while(it1.hasNext()){
-    		Integer next = it1.next();
+    	for (Integer i:rownum){
+    		Integer next = i;
     		newcol.add(next.toString());
     		sl.add(TmapSeries.get(next));    		
-    	}
-    	System.out.println(sl.get(0).size());
-    	System.out.println(newcol.size());   	
+    	}  	
     	DataFrame newdf= new DataFrame(sl,newcol);
     	return newdf;
     }
-
+    /**
+     * To iterate through each row in DataFrame
+     */
 	@Override
 	public Iterator iterator() {
 		// TODO Auto-generated method stub
 		return (Iterator) new SeriesIterator(this);
 	}
 	
+	/**
+	 * To replace all null values in a DataFrame with the given object
+	 * @param x Object which will replace the null values 
+	 */
 	public void replace(Object x){
 		for (int i=0;i<Columns.size();i++){
 			Collections.replaceAll(mapSeries.get(Columns.get(i)), null, x);
@@ -455,14 +557,15 @@ public class DataFrame implements Iterable{
 			Collections.replaceAll(TmapSeries.get(i), null, x);
 		}
 	}
-		
+		/**
+		 * To replace all null values in the given column of a DataFrame with the given object
+		 * @param col column name as string
+		 * @param x  Object which will replace the null values 
+		 */
 	public void replace(String col,Object x){
-		Iterator<Object> it1= mapSeries.get(col).iterator();
 		int i=0;
-		while(it1.hasNext()){
-			System.out.println(mapSeries.get(col).get(i));
-			if (it1.next() == null){
-
+		for(Object o:mapSeries.get(col)){
+			if (o == null){
 				mapSeries.get(col).set(i, x);
 				TmapSeries.get(rownum.get(i)).set(Columns.indexOf(col),x);
 			}
@@ -470,7 +573,7 @@ public class DataFrame implements Iterable{
 		}
 	}
 
-	public HashMap<Integer,Series> map2tmap(){
+	private HashMap<Integer,Series> map2tmap(){
 		HashMap<Integer, Series> tmap2=  new HashMap<Integer,Series>();		
 		for(int k=0; k<rownum.size(); k++){
 			Series invSeries = new Series();
@@ -481,7 +584,10 @@ public class DataFrame implements Iterable{
 		}
 		return tmap2;
 	} 
-	
+	/**
+	 * To drop the  given column names in the DataFrame
+	 * @param cols Column names as String array
+	 */
 	public void drop(String[] cols){
 		for (int i=0;i< cols.length;i++){
 			Columns.remove(cols[i]);
@@ -490,11 +596,20 @@ public class DataFrame implements Iterable{
 		this.TmapSeries=map2tmap();
 	}
 	
+	/**
+	 * To get the Header of a DataFrame
+	 * @return List of column names
+	 */
 	public List<Object> getColumns(){
 		List<Object> cols =new ArrayList<Object>(this.Columns);
 		return cols;
 	}
 	
+	/**
+	 * To rename the column names of DataFrame
+	 * @param cols1 Old Column names as String array
+	 * @param cols2 New Column names as String array
+	 */
 	public void setcolumns(String[] cols1,String[] cols2){
 		for(int i=0;i<cols1.length;i++){
 			Columns.set(Columns.indexOf(cols1[i]),cols2[i]);
@@ -502,11 +617,11 @@ public class DataFrame implements Iterable{
 			mapSeries.put(cols2[i], obj);					
 		}		
 	}
-	
+
 	public DataFrame groupBy(String[] x,String[] cols,Apply func){
 		List<Object> newcol= new ArrayList<Object>();
 		Map <List<Object>,Series> map=new LinkedHashMap <List<Object>,Series>();
-		List<String> listCols =  Arrays.asList(cols);
+		@SuppressWarnings("unused")
 		List<Object> cols1= this.getColumns();
 		Iterator itdf = this.iterator();
 		newcol.addAll(Arrays.asList(cols));
@@ -535,19 +650,19 @@ public class DataFrame implements Iterable{
 			}			
 			else{
 				Series b = map.get(key);
-				Iterator<Object> it2=b.iterator();
-				Iterator<Object> it3=ls.iterator();
-				while (it2.hasNext()){
-					Series s2=(Series) it2.next();
-					s2.add(it3.next());
+				Iterator<Object> it=ls.iterator();
+				for (Object o:b){
+					Series s2=(Series) o;
+					s2.add(it.next());
 				}
 					
 				}
 			}
-		Iterator it4= map.entrySet().iterator();
+		Iterator mapkey= map.entrySet().iterator();
 		List<Series>tmap2=new ArrayList<Series>();
-		while(it4.hasNext()){			
-			Map.Entry pairs = (Map.Entry)it4.next();
+		while(mapkey.hasNext()){			
+			Map.Entry pairs = (Map.Entry)mapkey.next();
+			@SuppressWarnings("unchecked")
 			List<Object> keys= (List<Object>) pairs.getKey();
 			Series values= (Series) pairs.getValue();
 			Series agg= aggregate(func,values);

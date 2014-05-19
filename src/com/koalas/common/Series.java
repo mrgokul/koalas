@@ -8,29 +8,40 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.ListIterator;
 import java.util.Map;
-
 
 import com.koalas.utils.Utils;
 
+/**
+ * One-dimensional ndarray
+ * @author GokulRamesh,Sureshkrishna
+ *
+ */
 public class Series extends ArrayList<Object> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	/**
+	 * This converts a List of objects to Series on a condition that all
+	 * objects are of same data type
+	 * @param a List of Objects
+	 */
 	public Series(List<Object> a) {	
 		super(a);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public Series() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
+	/**
+	 * Easy way to create a Series
+	 * @param objects List of Objects separated by comma 
+	 * @return Series formed by given objects
+	 */
 	 public static Series from(Object... objects) {
          Series s = new Series();
          
@@ -40,36 +51,55 @@ public class Series extends ArrayList<Object> {
          return s;
 	 }
 	 
-
-	
+	 /**
+	  * Appending  a Object to end of the Series 
+	  * @param o Object that has to be appended to Series 
+	  */
 	public boolean add(Object o) {
 	        return super.add(o);
 	    }
-	
+	/**
+	 * To output the Series
+	 */
 	public String toString(){
 		return super.toString();
 		
 	}
-	
+	/**
+	 * Cloning the Series
+	 */
 	public Series clone(){
 		return (Series) super.clone();
 	}
-	
+	/**
+	 * Slicing a Series provided starting and ending indexes
+	 * @param a Starting Index
+	 * @param b Ending Index
+	 * @return Series
+	 */
 	public Series slice(int a, int b){
 		return new Series(super.subList(a,b));
 	}
 	
-	
+	/**
+	 * Sorts the series in ascending order
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void sort(){
 		 Collections.sort((List) this);
 	}
-	
+	/**
+	 * Sorts the series in descending order
+	 */
 	@SuppressWarnings({ "rawtypes" })
 	public void reverse(){
 		 this.sort();
 		 Collections.reverse((List) this);
 	}
+	/**
+	 * This method can be used to find sum of all elements in a series
+	 * @return Float which is the sum of all elements
+	 */
 	public   Float sum(){
 		 int length=this.size();
 		 Float first = Float.valueOf(this.get(0).toString());
@@ -78,11 +108,18 @@ public class Series extends ArrayList<Object> {
 		 }
 		 return first;
 		 }
+	/**
+	 * This method can be used to find mean of all elements in a series
+	 * @return Float which is the average of elements in series
+	 */	
 	public Float mean(){
 		return this.sum()/this.size();
 	}
 	
-	
+	/**
+	 * This method can be used to find Standard deviation of all elements in a series
+	 * @return Float which is the Standard deviation of elements in series
+	 */	
 	public Float sd(){
 		int length=this.size();
 		Double sum = (double) 0;
@@ -92,6 +129,7 @@ public class Series extends ArrayList<Object> {
 		}
 		return (float) Math.sqrt( sum / ( length - 1 ) ); 		
 	}
+
 	
 	public Map<Float,Float> quantile(Float[] a){
         Arrays.sort(a);
@@ -101,7 +139,6 @@ public class Series extends ArrayList<Object> {
         Series clone = this.clone();
         clone.sort();
         //Float perc = 0.0f/clone.size();
-		Iterator<Object> it = clone.iterator();
 		int i = 0;
 		int j = 0;
 		Map<Float,Float> out = new LinkedHashMap<Float,Float>();
@@ -132,7 +169,10 @@ public class Series extends ArrayList<Object> {
           Float[] prob = {a};
           return quantile(prob).get(a);
 	  }
-	  
+		/**
+		 * This method can be used to find median of all elements in a series
+		 * @return Float which is the median of elements in series
+		 */	
 	  public Float median(){
 	          Float[] prob = {0.5f};
 	          return quantile(prob).get(0.5f);
@@ -142,36 +182,48 @@ public class Series extends ArrayList<Object> {
 	          Float[] prob = {0.0f,0.25f,0.5f,0.75f,1.0f};
 	          return quantile(prob);
 	  }
-	
+	  
+	  /**
+	   * To find the unique elements 
+	   * @return Series of unique elements
+	   */
 	public Series unique(){
 		Series uniq= new Series();
-		Iterator<Object> iterate=this.iterator();
-		while(iterate.hasNext()){
-			Object next= iterate.next();
-			if(!(uniq.contains(next))){
-			uniq.add(next);
+		for (Object o:this){
+			if(!(uniq.contains(o))){
+			uniq.add(o);
 			}
 		}
 		return uniq;
 	}
 	
-
+	  /**
+	   * To find the maximum of  elements 
+	   * @return maximum of  elements 
+	   */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Object max(){
 		return Collections.max((List) this);
-		
 	}
+	  /**
+	   * To find the minimum of  elements 
+	   * @return minimum of  elements 
+	   */	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Object min(){
 		return Collections.min((List) this);
 		
 	}
-	
+	  /**
+	   * To find the elements which are equal to given Object
+	   * @param obj Object for which the '=' condition has to be checked  
+	   * @return Series of booleans
+	   */	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Series eq(Object obj){
 		Series bool= new Series();
-		Iterator<Object> it=this.iterator();
-		while(it.hasNext()){
-			if(((Comparable) it.next()).compareTo((Comparable) obj) == 0){
+		for (Object o:this){
+			if(((Comparable) o).compareTo((Comparable) obj) == 0){
 				bool.add(true);
 			}
 			else{
@@ -180,12 +232,16 @@ public class Series extends ArrayList<Object> {
 		}
 		return bool;		
 	}
-	
+	  /**
+	   * To find the elements which are not equal to given Object
+	   * @param obj Object for which the '!=' condition has to be checked  
+	   * @return Series of booleans
+	   */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Series neq(Object obj){
 		Series bool= new Series();
-		Iterator<Object> it=this.iterator();
-		while(it.hasNext()){
-			if(((Comparable) it.next()).compareTo((Comparable) obj) == 0){
+		for (Object o:this){
+			if(((Comparable) o).compareTo((Comparable) obj) == 0){
 				bool.add(false);
 			}
 			else{
@@ -195,11 +251,16 @@ public class Series extends ArrayList<Object> {
 		return bool;		
 	}
 	
+	  /**
+	   * To find the elements which are greater than given Object
+	   * @param obj Object for which the '>' condition has to be checked  
+	   * @return Series of booleans
+	   */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Series gt(Object obj){
 		Series bool= new Series();
-		Iterator<Object> it=this.iterator();
-		while(it.hasNext()){
-			if(((Comparable) it.next()).compareTo((Comparable) obj) > 0){
+		for (Object o:this){
+			if(((Comparable) o).compareTo((Comparable) obj) > 0){
 				bool.add(true);
 			}
 			else{
@@ -209,11 +270,16 @@ public class Series extends ArrayList<Object> {
 		return bool;		
 	}
 	
+	  /**
+	   * To find the elements which are greater than or equal  to given Object
+	   * @param obj Object for which the '>=' condition has to be checked  
+	   * @return Series of booleans
+	   */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Series gte(Object obj){
 		Series bool= new Series();
-		Iterator<Object> it=this.iterator();
-		while(it.hasNext()){
-			if(((Comparable) it.next()).compareTo((Comparable) obj) >= 0){
+		for (Object o:this){
+			if(((Comparable) o).compareTo((Comparable) obj) >= 0){
 				bool.add(true);
 			}
 			else{
@@ -223,11 +289,16 @@ public class Series extends ArrayList<Object> {
 		return bool;		
 	}
 	
+	  /**
+	   * To find the elements which are less than given Object
+	   * @param obj Object for which the '<' condition has to be checked  
+	   * @return Series of booleans
+	   */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Series lt(Object obj){
 		Series bool= new Series();
-		Iterator<Object> it=this.iterator();
-		while(it.hasNext()){
-			if(((Comparable) it.next()).compareTo((Comparable) obj) < 0){
+		for (Object o:this){
+			if(((Comparable) o).compareTo((Comparable) obj) < 0){
 				bool.add(true);
 			}
 			else{
@@ -236,12 +307,16 @@ public class Series extends ArrayList<Object> {
 		}
 		return bool;		
 	}
-	
+	  /**
+	   * To find the elements which are less than or equal  to given Object
+	   * @param obj Object for which the '<=' condition has to be checked  
+	   * @return Series of booleans
+	   */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Series lte(Object obj){
 		Series bool= new Series();
-		Iterator<Object> it=this.iterator();
-		while(it.hasNext()){
-			if(((Comparable) it.next()).compareTo((Comparable) obj) <= 0){
+		for (Object o:this){
+			if(((Comparable) o).compareTo((Comparable) obj) <= 0){
 				bool.add(true);
 			}
 			else{
@@ -250,12 +325,15 @@ public class Series extends ArrayList<Object> {
 		}
 		return bool;		
 	}
-
+	/**
+	 * To find whether any of objects in given list are in the series
+	 * @param arr List of Objects
+	 * @return Series of booleans of same length
+	 */
 	public Series in(List<Object> arr){
 		Series bool= new Series();
-		Iterator<Object> it=this.iterator();
-		while(it.hasNext()){
-			if(arr.indexOf(it.next()) > -1){
+		for (Object o:this){
+			if(arr.indexOf(o) > -1){
 				bool.add(true);
 			}
 			else{
@@ -264,65 +342,78 @@ public class Series extends ArrayList<Object> {
 		}
 		return bool;		
 	}
-	
+	/**
+	 * To find the 'and' condition between two Series of booleans
+	 * (between same level elements) 
+	 * @param s Series of booleans
+	 * @return Series of booleans
+	 */
 	public Series and(Series s){
 		Series bool= new Series();
 		if (!(this.size()== s.size())){
 			throw new IllegalArgumentException("Series sizes are diferent");
 		}
 		else{
-			Iterator<Object> it1=this.iterator();
-			Iterator<Object> it2=s.iterator();
-			while(it1.hasNext()){
-				bool.add((Boolean)it1.next() & (Boolean)it2.next());
+			Iterator<Object> it=s.iterator();
+			for (Object o:this){
+				bool.add((Boolean)o & (Boolean) it.next());
 			}
 			return bool;
 		}
 	}
-	
+	/**
+	 * To find the 'or' condition between two Series of booleans
+	 * (between same level elements) 
+	 * @param s Series of booleans
+	 * @return Series of booleans
+	 */
 	public Series or(Series s){
 		Series bool= new Series();
 		if (!(this.size()== s.size())){
 			throw new IllegalArgumentException("Series sizes are diferent");
 		}
 		else{
-		Iterator<Object> it1=this.iterator();
-		Iterator<Object> it2=s.iterator();
-		while(it1.hasNext()){
-			bool.add((Boolean)it1.next() | (Boolean)it2.next());
+		Iterator<Object> it=s.iterator();
+		for (Object o:this){
+			bool.add((Boolean)o | (Boolean)it.next());
 		}
 		return bool;
 		}
 	}
-	
+	/**
+	 * To find opposite of each booleans for a Series of booleans 
+	 * @return Series of booleans
+	 */
 	public Series not(){
 		Series bool= new Series();
-		Iterator<Object> it1=this.iterator();
-		while(it1.hasNext()){
-			bool.add(!(Boolean)it1.next() );
+		for (Object o:this){
+			bool.add(!(Boolean)o );
 		}
 		return bool;
 	}
-
+	/**
+	 * Sum of two series(sum of elements which are at same level) 
+	 * @param s Series to which the current series to be added
+	 * @return Series obtained after adding two series
+	 */
 	public Series plus(Series s){
 		Series n= new Series();
-		Iterator<Object> it1=this.iterator();
-		Iterator<Object> it2=s.iterator();
+		Iterator<Object> it=s.iterator();
 		if (!(this.size()== s.size() || this.size() % s.size() ==0)){
 			throw new IllegalArgumentException("Series sizes are diferent");
 		}
 		else if (this.size()== s.size()) {
-			while(it1.hasNext()){
-				n.add(Float.valueOf(it1.next().toString())+Float.valueOf(it2.next().toString()));
+			for (Object o:this){
+				n.add(Float.valueOf(o.toString())+Float.valueOf(it.next().toString()));
 			}
 		}
 		else {
 			int i=0;
-			while(it1.hasNext()){
+			for (Object o:this){
 				if( i % s.size()  == 0){
-					it2=s.iterator();
+					it=s.iterator();
 				}
-				n.add(Float.valueOf(it1.next().toString())+Float.valueOf(it2.next().toString()));
+				n.add(Float.valueOf(o.toString())+Float.valueOf(it.next().toString()));
 				i++;
 			}	
 		}
@@ -330,157 +421,172 @@ public class Series extends ArrayList<Object> {
 	}
 	
 
-	
+	/**
+	 * Multiplication of two series(Multiplication of elements which are at same level)
+	 * @param s Series to which the current series to be multiplied
+	 * @return Series obtained after Multiplication of two series
+	 */
 	public Series multiply(Series s){
 		Series n= new Series();
-		Iterator<Object> it1=this.iterator();
 		Iterator<Object> it2=s.iterator();
 		if (!(this.size()== s.size() || this.size() % s.size() ==0)){
 			throw new IllegalArgumentException("Series sizes are diferent");
 		}
 		else if (this.size()== s.size()) {
-			while(it1.hasNext()){
-				n.add(Float.valueOf(it1.next().toString())*Float.valueOf(it2.next().toString()));
+			for (Object o:this){
+				n.add(Float.valueOf(o.toString())*Float.valueOf(it2.next().toString()));
 			}
 		}
 		else {
 			int i=0;
-			while(it1.hasNext()){
+			for (Object o:this){
 				if( i % s.size()  == 0){
 					it2=s.iterator();
 				}
-				n.add(Float.valueOf(it1.next().toString())*Float.valueOf(it2.next().toString()));
+				n.add(Float.valueOf(o.toString())*Float.valueOf(it2.next().toString()));
 				i++;
 			}	
 		}
 		return n;		
 	}
 	
+	/**
+	 * Subtraction of two series(Subtraction of elements which are at same level) Current Series- new Series
+	 * @param s Series by  which the current series to be Subtracted
+	 * @return Series obtained after Subtraction of two series
+	 */
 	public Series minus(Series s){
 		Series n= new Series();
-		Iterator<Object> it1=this.iterator();
 		Iterator<Object> it2=s.iterator();
 		if (!(this.size()== s.size() || this.size() % s.size() ==0)){
 			throw new IllegalArgumentException("Series sizes are diferent");
 		}
 		else if (this.size()== s.size()) {
-			while(it1.hasNext()){
-				n.add(Float.valueOf(it1.next().toString())-Float.valueOf(it2.next().toString()));
+			for (Object o:this){
+				n.add(Float.valueOf(o.toString())-Float.valueOf(it2.next().toString()));
 			}
 		}
 		else {
 			int i=0;
-			while(it1.hasNext()){
+			for (Object o:this){
 				if( i % s.size()  == 0){
 					it2=s.iterator();
 				}
-				n.add(Float.valueOf(it1.next().toString())-Float.valueOf(it2.next().toString()));
+				n.add(Float.valueOf(o.toString())-Float.valueOf(it2.next().toString()));
 				i++;
 			}	
 		}
 		return n;		
 	}
 	
+	/**
+	 * Division of two series(Division of elements which are at same level) Current Series / new Series
+	 * @param s Series by  which the current series to be divided
+	 * @return Series obtained after Division of  two series
+	 */
 	public Series divide(Series s){
 		Series n= new Series();
-		Iterator<Object> it1=this.iterator();
 		Iterator<Object> it2=s.iterator();
 		if (!(this.size()== s.size() || this.size() % s.size() ==0)){
 			throw new IllegalArgumentException("Series sizes are diferent");
 		}
 		else if (this.size()== s.size()) {
-			while(it1.hasNext()){
-				n.add(Float.valueOf(it1.next().toString())/Float.valueOf(it2.next().toString()));
+			for (Object o:this){
+				n.add(Float.valueOf(o.toString())/Float.valueOf(it2.next().toString()));
 			}
 		}
 		else {
 			int i=0;
-			while(it1.hasNext()){
+			for (Object o:this){
 				if( i % s.size()  == 0){
 					it2=s.iterator();
 				}
-				n.add(Float.valueOf(it1.next().toString())/Float.valueOf(it2.next().toString()));
+				n.add(Float.valueOf(o.toString())/Float.valueOf(it2.next().toString()));
 				i++;
 			}	
 		}
 		return n;		
 	}
 	
+	/**
+	 * Modulo of two series(modulus of elements which are at same level) Current Series % new series
+	 * @param s Series 
+	 * @return Series obtained after Modulo of two series
+	 */
 	public Series modulus(Series s){
 		Series n= new Series();
-		Iterator<Object> it1=this.iterator();
 		Iterator<Object> it2=s.iterator();
 		if (!(this.size()== s.size() || this.size() % s.size() ==0)){
 			throw new IllegalArgumentException("Series sizes are diferent");
 		}
 		else if (this.size()== s.size()) {
-			while(it1.hasNext()){
-				n.add(Float.valueOf(it1.next().toString())%Float.valueOf(it2.next().toString()));
+			for (Object o:this){
+				n.add(Float.valueOf(o.toString())%Float.valueOf(it2.next().toString()));
 			}
 		}
 		else {
 			int i=0;
-			while(it1.hasNext()){
+			for (Object o:this){
 				if( i % s.size()  == 0){
 					it2=s.iterator();
 				}
-				n.add(Float.valueOf(it1.next().toString())%Float.valueOf(it2.next().toString()));
+				n.add(Float.valueOf(o.toString())%Float.valueOf(it2.next().toString()));
 				i++;
 			}	
 		}
 		return n;		
 	}
-	
+	/**
+	 * To replace all null's in series with a given object
+	 * @param x Object which replaces the nulls
+	 */
 	public void replace(Object x){
 		Collections.replaceAll(this, null, x);
 		}
-	
+	/**
+	 * To know whether there are any duplicates in a series, true for first occurrence  and 
+	 * false for second occurrence onwards 
+	 * @return Series of  Booleans
+	 */
 	public Series duplicate(){
 		Series bool= new Series();
 		Series check = new Series();
-		Iterator<Object> it1=this.iterator();
-		Object it;
-		while(it1.hasNext()){
-			it=it1.next();
-			if (check.contains(it)){
+		for (Object o:this){
+			if (check.contains(o)){
 				bool.add(true);
 			}
 			else{
-				check.add(it);
+				check.add(o);
 				bool.add(false);
 			}
 		}
 		return bool;
 	}
 	
+	/**
+	 * To append two series
+	 * @param s Series which has to be appended to current series
+	 */
 	public void append(Series s){
-		Iterator<Object> it1= s.iterator();
-		while(it1.hasNext()){
-			this.add(it1.next());
+		for (Object o:s){
+			this.add(o);
 		}
 	}
 	
-	
+	/**
+	 * To find variance of elements in series
+	 * @return Float which is the variance 
+	 */
 	public float var(){
 		return (float) Math.pow(this.sd(),2);
 	}
 	
-	public Object percentile(int p){
-		Series clone = this.clone();
-		clone.sort();
-		Float rank=(float) (((float)p/100)*(this.size()+1));
-		if (rank-Math.floor(rank)==0){
-			return clone.get((int) Math.floor(rank-1));
-		}
-		else{
-			int rank1=(int) Math.floor(rank);
-			return (rank-Math.floor(rank1))*
-					(Float.valueOf(clone.get(rank1).toString())-Float.valueOf(clone.get(rank1-1).toString()))+
-					Float.valueOf(clone.get(rank1-1).toString());
-		}
-		
-	}
-	
+
+	/**
+	 * To find the Covariance between two series   
+	 * @param s Series 
+	 * @return FLoat which is the cov between two series 
+	 */
 	public Float cov(Series s){
 		if(!(this.size()== s.size())){
 			throw new IllegalArgumentException("Series sizes are diferent");
@@ -492,12 +598,15 @@ public class Series extends ArrayList<Object> {
 		}
 	}
 	
+	/**
+	 * To find the cumulative max  of a series 
+	 * @return Series with cumulative maximum at each level
+	 */
 	public Series cummax(){
-		Iterator<Object> it1= this.iterator();
 		Series cum = new Series();
 		int i=0;
-		while(it1.hasNext()){
-			Float max=Float.valueOf(it1.next().toString());
+		for (Object o:this){
+			Float max=Float.valueOf(o.toString());
 			System.out.println(cum);
 			if (i==0){
 				cum.add(this.get(i));
@@ -515,12 +624,15 @@ public class Series extends ArrayList<Object> {
 		return cum;
 	}
 	
+	/**
+	 * To find the cumulative min  of a series 
+	 * @return Series with cumulative minimum at each level
+	 */
 	public Series cummin(){
-		Iterator<Object> it1= this.iterator();
 		Series cum = new Series();
 		int i=0;
-		while(it1.hasNext()){
-			Float max=Float.valueOf(it1.next().toString());
+		for (Object o:this){
+			Float max=Float.valueOf(o.toString());
 			System.out.println(cum);
 			if (i==0){
 				cum.add(this.get(i));
@@ -539,12 +651,15 @@ public class Series extends ArrayList<Object> {
 	}
 	
 	
+	/**
+	 * To find the cumulative product  of a series 
+	 * @return Series with cumulative product at each level
+	 */
 	public Series cumprod(){
-		Iterator<Object> it1= this.iterator();
 		Series cum = new Series();
 		int i=0;
-		while(it1.hasNext()){
-			Float curr=Float.valueOf(it1.next().toString());
+		for (Object o:this){
+			Float curr=Float.valueOf(o.toString());
 			if (i==0){
 				cum.add(this.get(i));
 			}
@@ -556,12 +671,15 @@ public class Series extends ArrayList<Object> {
 		return cum;
 	}
 	
+	/**
+	 * To find the cumulative sum  of a series 
+	 * @return Series with cumulative sum at each level
+	 */
 	public Series cumsum(){
-		Iterator<Object> it1= this.iterator();
 		Series cum = new Series();
 		int i=0;
-		while(it1.hasNext()){
-			Float curr=Float.valueOf(it1.next().toString());
+		for (Object o:this){
+			Float curr=Float.valueOf(o.toString());
 			if (i==0){
 				cum.add(this.get(i));
 			}
@@ -573,6 +691,7 @@ public class Series extends ArrayList<Object> {
 		return cum;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public Series cut(Float[] breaks){
         if(breaks.length < 2){
                 throw new IllegalArgumentException("Invalid number of Intervals");
@@ -646,58 +765,63 @@ public class Series extends ArrayList<Object> {
 			return sorts.get(0);
 	}
 	
+	/**
+	 * To find the index of first occurrence of maximum of series 
+	 * @return integer which is the index of the maximum value
+	 */
 	public int argmax(){
 		Series uniq=this.unique();
 		Map <Object,List<Integer>> map =new HashMap <Object,List<Integer>>();
-		Iterator<Object> it1= uniq.iterator();
-		Iterator<Object> it2= this.iterator();
-		while(it1.hasNext()){
+		for (Object o:uniq){
 			List<Integer>f=new ArrayList<Integer>();
-			map.put(it1.next(),f );
+			map.put(o,f );
 		}
 		int i=0;
-		while(it2.hasNext()){
-			map.get(it2.next()).add(i);
+		for (Object o:this){
+			map.get(o).add(i);
 			i++;
 		}
 		return Collections.min(map.get(this.max()));
 	}
+	/**
+	 * To find the index of first occurrence of minimum of series 
+	 * @return integer which is the index of the minimum value
+	 */
 	public int argmin(){
 		Series uniq=this.unique();
 		Map <Object,List<Integer>> map =new HashMap <Object,List<Integer>>();
-		Iterator<Object> it1= uniq.iterator();
-		Iterator<Object> it2= this.iterator();
-		while(it1.hasNext()){
+		for(Object o:uniq){
 			List<Integer>f=new ArrayList<Integer>();
-			map.put(it1.next(),f );
+			map.put(o,f );
 		}
 		int i=0;
-		while(it2.hasNext()){
-			map.get(it2.next()).add(i);
+		for(Object o:this){
+			map.get(o).add(i);
 			i++;
 		}
 		return Collections.min(map.get(this.min()));
 	}
 	
+	/**
+	 * To find the index after sorting a series 
+	 * @return List of integers which contains the index after sorting
+	 */
 	public List<Integer> argsort(){
 		Series uniq=this.unique();
 		List<Integer> args=new ArrayList<Integer>();
 		Map <Object,List<Integer>> map =new HashMap <Object,List<Integer>>();
-		Iterator<Object> it1= uniq.iterator();	
-		Iterator<Object> it2= this.iterator();
-		while(it1.hasNext()){
+		for(Object o:uniq){
 			List<Integer>f=new ArrayList<Integer>();
-			map.put(it1.next(),f );
+			map.put(o,f );
 		}
 		int i=0;
-		while(it2.hasNext()){
-			map.get(it2.next()).add(i);
+		for(Object o:this){
+			map.get(o).add(i);
 			i++;
 		}
 		uniq.sort();
-		Iterator<Object> it3= uniq.iterator();
-		while(it3.hasNext()){
-			List<Integer>f2=map.get(it3.next());
+		for(Object o:uniq){
+			List<Integer>f2=map.get(o);
 			Collections.sort(f2);
 			args.addAll(f2);
 		}
