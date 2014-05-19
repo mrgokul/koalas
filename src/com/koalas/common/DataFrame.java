@@ -22,7 +22,7 @@ import com.koalas.utils.Utils;
 import com.koalas.utils.SeriesIterator;
 /**
  * Tabular data structure with labeled axes (rows and columns).
- * @author GokulRamesh,Sureshkrishna G
+ * @author GokulRamesh,Sureshkrishna
  *
  */
 public class DataFrame implements Iterable{

@@ -15,9 +15,10 @@ import java.util.Map;
 import com.koalas.common.DataFrame;
 import com.koalas.common.Series;
 
+
 /**
  * Same as pandas in Python , which can perform joins,read csv operations
- * @author GokulRamesh,Sureshkrishna G
+ * @author GokulRamesh,Sureshkrishna
  *
  */
 public class Koalas {
@@ -141,15 +142,13 @@ public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String 
 		Map <List<Object>,List<Series>> mapfull=new LinkedHashMap <List<Object>,List<Series>>();
 		List<Object> cols1= df1.getColumns();
 		List<Object> cols2= df2.getColumns();
-		Iterator<Object> it1 = cols1.iterator();
-		Iterator<Object> it2 = cols2.iterator();
 		List<Object> newcolumns= new ArrayList<Object>();
 		for(String col: cols){
 			newcolumns.add(col);
 		}
 		List<String> listCols =  Arrays.asList(cols);
-		while(it1.hasNext()){
-			Object nx = it1.next();
+		for (Object o:cols1){
+			Object nx = o;
 			if(listCols.indexOf(nx) == -1){
 				if(cols2.indexOf(nx)>-1){
 					cols2.set(cols2.indexOf(nx),nx+".y");
@@ -161,9 +160,8 @@ public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String 
 				}
 			}
 		}
-		
-		while(it2.hasNext()){
-			Object nx = it2.next();
+		for (Object o:cols2){
+			Object nx = o;
 			if(listCols.indexOf(nx) == -1){
 				newcolumns.add(nx);
 			}
@@ -239,9 +237,9 @@ public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String 
 		}
 		
 		if (full){
-			Iterator it5= mapfull.entrySet().iterator();
-			while(it5.hasNext()){
-				Map.Entry pairs = (Map.Entry)it5.next();
+			Iterator mapfullit= mapfull.entrySet().iterator();
+			while(mapfullit.hasNext()){
+				Map.Entry pairs = (Map.Entry)mapfullit.next();
 				List<Object> keys= (List<Object>) pairs.getKey();
 				List<Series> s= new ArrayList<Series>();
 				if (!map.containsKey(keys)){
@@ -258,18 +256,17 @@ public static DataFrame join(DataFrame  df1,DataFrame  df2,String[] cols,String 
 		}
 		
 		
-		Iterator it4= map.entrySet().iterator();
+		Iterator mapit= map.entrySet().iterator();
 		List<Series> tmap= new ArrayList<Series>();
-		while(it4.hasNext()){
+		while(mapit.hasNext()){
 			
-			Map.Entry pairs = (Map.Entry)it4.next();
+			Map.Entry pairs = (Map.Entry)mapit.next();
 			List<Object> keys= (List<Object>) pairs.getKey();
 			List<Object> values= (List<Object>) pairs.getValue();
 			
-			Iterator it6 = values.iterator();
-			while (it6.hasNext()){
+			for (Object o:values){
 				Series row=new Series(keys);
-				List<Object> val = (List<Object>) it6.next();
+				List<Object> val = (List<Object>) o;
 				//System.out.println(val);
 				//System.out.println(val.size());
 				//System.out.println(cols.length);

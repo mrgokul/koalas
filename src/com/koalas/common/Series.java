@@ -14,7 +14,7 @@ import com.koalas.utils.Utils;
 
 /**
  * One-dimensional ndarray
- * @author GokulRamesh,Sureshkrishna G
+ * @author GokulRamesh,Sureshkrishna
  *
  */
 public class Series extends ArrayList<Object> {
