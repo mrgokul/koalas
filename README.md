@@ -1,7 +1,7 @@
 Koalas
 ======
 
-Lightweight Data Analysis Framework. Inspired from R and Python-Pandas, and adapted to a terri*** language called Java. 
+Lightweight Data Analysis Framework. Inspired from R and Python-Pandas. All because we wanted to learn Java. 
 
 Two major concepts:
 * DataFrame
@@ -120,3 +120,19 @@ DataFrame dfg= df.groupBy(cols,by,func);
 
 Extends ArrayList, supports many mathematical methods of Pandas' Series and displays the Recycable nature of the R vector. 
 ### Examples
+
+```
+Series S =  Series.from(1,2,3);
+S.add(4);
+
+System.out.println(S);
+// [1,2,3,4]
+
+System.out.println(S.mean());
+// 2.5
+
+System.out.println(S.plus(S));
+// [2.0, 4.0, 6.0, 8.0]
+
+
+```
