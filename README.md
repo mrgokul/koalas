@@ -7,8 +7,25 @@ Two major concepts:
 * DataFrame
 * Series
 
-You can refer [here](http://mrgokul.github.io/koalas/) for the API docs.
+You can refer [here](http://mrgokul.github.io/koalas/) for the API docs. Get the JAR.
 
+
+```
+<dependencies>
+  <dependency>
+    <groupId>com.latentview.koalas</groupId>
+    <artifactId>koalas</artifactId>
+    <version>0.0.1-beta</version>
+  </dependency>
+</dependencies>
+
+<repositories>
+  <repository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/content/groups/staging/</url>
+  </repository>
+</repositories>
+```
 
 ##DataFrame
 
