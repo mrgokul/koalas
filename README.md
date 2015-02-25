@@ -9,6 +9,7 @@ Two major concepts:
 
 You can refer [here](http://mrgokul.github.io/koalas/) for the API docs. Get the JAR.
 
+```
 <dependencies>
   <dependency>
     <groupId>com.latentview.koalas</groupId>
@@ -23,6 +24,7 @@ You can refer [here](http://mrgokul.github.io/koalas/) for the API docs. Get the
     <url>https://oss.sonatype.org/content/groups/staging/</url>
   </repository>
 </repositories>
+```
 
 
 ##DataFrame
